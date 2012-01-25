@@ -1272,6 +1272,12 @@ INTERNAL_OTA_PACKAGE_TARGET := $(PRODUCT_OUT)/$(name).zip
 
 $(INTERNAL_OTA_PACKAGE_TARGET): KEY_CERT_PAIR := $(DEFAULT_KEY_CERT_PAIR)
 
+ifeq ($(TARGET_OTA_ASSERT_SKIP),true)
+    $(INTERNAL_OTA_PACKAGE_TARGET): skip_assert := true
+else
+    $(INTERNAL_OTA_PACKAGE_TARGET): skip_assert := false
+endif
+
 ifeq ($(TARGET_RELEASETOOL_OTA_FROM_TARGET_SCRIPT),)
     OTA_FROM_TARGET_SCRIPT := ./build/tools/releasetools/ota_from_target_files
 else
@@ -1283,6 +1289,7 @@ $(INTERNAL_OTA_PACKAGE_TARGET): $(BUILT_TARGET_FILES_PACKAGE) $(DISTTOOLS)
 	$(OTA_FROM_TARGET_SCRIPT) -v \
 	   -p $(HOST_OUT) \
 	   -k $(KEY_CERT_PAIR) \
+	   --no_assert=$(skip_assert) \
 	   $(BUILT_TARGET_FILES_PACKAGE) $@
 	
 AOSPX_TARGET_PACKAGE := $(PRODUCT_OUT)/$(AOSPX_VERSION).zip
