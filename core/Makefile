@@ -1281,9 +1281,15 @@ $(INTERNAL_OTA_PACKAGE_TARGET): $(BUILT_TARGET_FILES_PACKAGE) $(DISTTOOLS)
 	   -k $(KEY_CERT_PAIR) \
 	   $(BUILT_TARGET_FILES_PACKAGE) $@
 
-.PHONY: otapackage
+.PHONY: otapackage aospx
 otapackage: $(INTERNAL_OTA_PACKAGE_TARGET)
-
+aospx: otapackage
+ifneq ($(TARGET_CUSTOM_RELEASETOOL),)
+        @echo -e ${CL_CYN}"Running releasetool"${CL_RST}
+        $(hide) OTAPACKAGE=$(INTERNAL_OTA_PACKAGE_TARGET) $(TARGET_CUSTOM_RELEASETOOL)
+else
+        $(hide) ./vendor/aospx/tools/squisher
+endif
 # -----------------------------------------------------------------
 # The update package
 
