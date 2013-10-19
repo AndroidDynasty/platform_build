@@ -410,9 +410,12 @@ def WriteFullOTAPackage(input_zip, output_zip):
   if "selinux_fc" in OPTIONS.info_dict:
     WritePolicyConfig(OPTIONS.info_dict["selinux_fc"], output_zip)
 
+  script.Print("Formating System...")
   script.FormatPartition("/system")
+  script.Print("Mounting System...")
   script.Mount("/system")
   script.UnpackPackageDir("recovery", "/system")
+  script.Print("Installing System...")
   script.UnpackPackageDir("system", "/system")
 
   symlinks = CopySystemFiles(input_zip, output_zip)
